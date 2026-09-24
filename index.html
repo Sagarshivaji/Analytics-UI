@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BenchFlow Analytics — Enterprise Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --color-primary-50:  #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-500: #3B82F6;
+  --color-primary-600: #2563EB;
+  --color-primary-700: #1D4ED8;
+
+  --color-success-50:  #ECFDF5;
+  --color-success-500: #10B981;
+  --color-success-700: #047857;
+
+  --color-warning-50:  #FFFBEB;
+  --color-warning-500: #F59E0B;
+  --color-warning-700: #B45309;
+
+  --color-danger-50:   #FEF2F2;
+  --color-danger-500:  #EF4444;
+  --color-danger-700:  #B91C1C;
+
+  --color-gray-25:  #FCFCFD;
+  --color-gray-50:  #F9FAFB;
+  --color-gray-100: #F3F4F6;
+  --color-gray-200: #E5E7EB;
+  --color-gray-300: #D1D5DB;
+  --color-gray-400: #9CA3AF;
+  --color-gray-500: #6B7280;
+  --color-gray-600: #4B5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1F2937;
+  --color-gray-900: #111827;
+
+  --chart-1:  #3B82F6;
+  --chart-2:  #10B981;
+  --chart-3:  #F59E0B;
+  --chart-4:  #EF4444;
+  --chart-5:  #8B5CF6;
+  --chart-6:  #06B6D4;
+  --chart-7:  #EC4899;
+  --chart-8:  #84CC16;
+  --chart-9:  #F97316;
+  --chart-10: #6366F1;
+  --chart-11: #14B8A6;
+  --chart-12: #A855F7;
+
+  --chart-positive:  #10B981;
+  --chart-negative:  #EF4444;
+  --chart-neutral:   #6B7280;
+  --chart-forecast:  #8B5CF6;
+  --chart-benchmark: #9CA3AF;
+  --chart-target:    #F59E0B;
+  --chart-grid:      #F3F4F6;
+  --chart-axis:      #9CA3AF;
+
+  --surface-page:    #F9FAFB;
+  --surface-card:    #FFFFFF;
+  --surface-hover:   #F9FAFB;
+  --surface-active:  #EFF6FF;
+  --surface-selected:#DBEAFE;
+
+  --border-subtle:   #F3F4F6;
+  --border-default:  #E5E7EB;
+  --border-strong:   #D1D5DB;
+  --border-focus:    #3B82F6;
+
+  --space-0:  0px;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --shadow-xs:  0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.03);
+  --shadow-lg:  0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.03);
+  --shadow-xl:  0 20px 25px rgba(0,0,0,0.08), 0 8px 10px rgba(0,0,0,0.04);
+  --shadow-focus: 0 0 0 3px rgba(59,130,246,0.15);
+
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   8px;
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  --sidebar-width: 280px;
+  --sidebar-collapsed: 64px;
+  --header-height: 64px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-gray-900);
+  background: var(--surface-page);
+  min-height: 100vh;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select { font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-gray-300); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gray-400); }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns 0.2s ease;
+}
+.app.collapsed { grid-template-columns: var(--sidebar-collapsed) 1fr; }
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar {
+  background: var(--surface-card);
+  border-right: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  z-index: 40;
+}
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  height: var(--header-height);
+  border-bottom: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+.sidebar-logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 16px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+.sidebar-brand {
+  display: flex; flex-direction: column;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sidebar-brand-name { font-size: 14px; font-weight: 700; color: var(--color-gray-900); }
+.sidebar-brand-sub { font-size: 11px; color: var(--color-gray-500); font-weight: 500; letter-spacing: 0.02em; }
+.sidebar-toggle {
+  margin-left: auto;
+  width: 28px; height: 28px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-gray-500);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.sidebar-toggle:hover { background: var(--color-gray-100); color: var(--color-gray-700); }
+.sidebar-toggle svg { transition: transform 0.2s; }
+.app.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-3) var(--space-2);
+}
+.nav-section { margin-bottom: var(--space-1); }
+.nav-section-header {
+  display: flex; align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.nav-section-header:hover { background: var(--color-gray-50); }
+.nav-section-header svg { flex-shrink: 0; transition: transform 0.2s; }
+.nav-section.collapsed .nav-section-header svg { transform: rotate(-90deg); }
+.nav-section-title { flex: 1; }
+.nav-section-count {
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--color-gray-100);
+  color: var(--color-gray-600);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+.app.collapsed .nav-section-title,
+.app.collapsed .nav-section-count,
+.app.collapsed .sidebar-brand,
+.app.collapsed .nav-item-label,
+.app.collapsed .nav-item-shortcut,
+.app.collapsed .nav-item-badge,
+.app.collapsed .nav-item-dot { display: none; }
+.app.collapsed .nav-section-header { justify-content: center; padding: var(--space-2); }
+.app.collapsed .nav-section.collapsed .nav-item { display: none; }
+
+.nav-section-items {
+  padding-left: var(--space-3);
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+.nav-section.collapsed .nav-section-items { max-height: 0 !important; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  transition: all 0.12s;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1px;
+}
+.nav-item:hover { background: var(--color-gray-50); color: var(--color-gray-900); }
+.nav-item.active {
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+  font-weight: 600;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 6px; bottom: 6px;
+  width: 2px;
+  background: var(--color-primary-600);
+  border-radius: 0 2px 2px 0;
+}
+.nav-item-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.nav-item-shortcut {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--color-gray-400);
+  background: var(--color-gray-50);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--color-gray-200);
+}
+.nav-item-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary-500);
+  flex-shrink: 0;
+}
+.nav-item-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-danger-50);
+  color: var(--color-danger-700);
+}
+.nav-item svg { flex-shrink: 0; width: 16px; height: 16px; }
+
+.sidebar-footer {
+  border-top: 1px solid var(--border-default);
+  padding: var(--space-3) var(--space-2);
+  flex-shrink: 0;
+}
+.sidebar-footer-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sidebar-footer-item:hover { background: var(--color-gray-50); color: var(--color-gray-900); }
+.sidebar-footer-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-default);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+.header-inner {
+  padding: var(--space-4) var(--space-6);
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  color: var(--color-gray-500);
+  margin-bottom: var(--space-2);
+}
+.breadcrumb a { color: var(--color-gray-500); transition: color 0.12s; }
+.breadcrumb a:hover { color: var(--color-gray-700); }
+.breadcrumb-sep { color: var(--color-gray-300); }
+.breadcrumb-current { color: var(--color-gray-700); font-weight: 500; }
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.header-title-group { min-width: 0; }
+.header-title {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-1);
+}
+.header-desc {
+  font-size: 13px;
+  color: var(--color-gray-500);
+  line-height: 18px;
+}
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.header-updated {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  color: var(--color-gray-500);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+}
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-success-500);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ============================================================
+   FILTER BAR
+   ============================================================ */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+.filter-chip:hover { border-color: var(--border-strong); background: var(--color-gray-50); }
+.filter-chip.active {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+.filter-chip svg { width: 14px; height: 14px; color: var(--color-gray-400); }
+.filter-chip.active svg { color: var(--color-primary-600); }
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+}
+.search-box svg {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  width: 14px; height: 14px;
+  color: var(--color-gray-400);
+  pointer-events: none;
+}
+.search-box input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3) var(--space-2) 32px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  background: var(--surface-card);
+  color: var(--color-gray-900);
+  transition: all 0.15s;
+}
+.search-box input::placeholder { color: var(--color-gray-400); }
+.search-box input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.12s;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.btn svg { width: 14px; height: 14px; }
+.btn-ghost {
+  color: var(--color-gray-600);
+}
+.btn-ghost:hover { background: var(--color-gray-100); color: var(--color-gray-900); }
+.btn-secondary {
+  background: var(--surface-card);
+  border-color: var(--border-default);
+  color: var(--color-gray-700);
+}
+.btn-secondary:hover { background: var(--color-gray-50); border-color: var(--border-strong); }
+.btn-primary {
+  background: var(--color-primary-600);
+  color: white;
+  border-color: var(--color-primary-600);
+}
+.btn-primary:hover { background: var(--color-primary-700); border-color: var(--color-primary-700); }
+.btn-icon {
+  width: 32px; height: 32px;
+  padding: 0;
+  justify-content: center;
+}
+
+/* Active filters */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--border-subtle);
+  margin-top: var(--space-1);
+}
+.active-filters-label {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 4px 2px 8px;
+  background: var(--color-primary-50);
+  border: 1px solid var(--color-primary-100);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-primary-700);
+}
+.active-filter-tag button {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-primary-500);
+  transition: all 0.12s;
+}
+.active-filter-tag button:hover { background: var(--color-primary-100); color: var(--color-primary-700); }
+.active-filter-tag svg { width: 10px; height: 10px; }
+.clear-all {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.clear-all:hover { color: var(--color-gray-700); }
+
+/* ============================================================
+   CONTENT AREA
+   ============================================================ */
+.content {
+  padding: var(--space-6);
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ============================================================
+   SECTION HEADER
+   ============================================================ */
+.section {
+  margin-bottom: var(--space-8);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.section-title-group { display: flex; align-items: center; gap: var(--space-3); }
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  letter-spacing: -0.01em;
+}
+.section-subtitle {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  font-weight: 400;
+}
+.section-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+/* ============================================================
+   GRID
+   ============================================================ */
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+.grid-12 { grid-template-columns: repeat(12, 1fr); }
+.grid-6  { grid-template-columns: repeat(6, 1fr); }
+.grid-4  { grid-template-columns: repeat(4, 1fr); }
+.grid-3  { grid-template-columns: repeat(3, 1fr); }
+.grid-2  { grid-template-columns: repeat(2, 1fr); }
+
+.col-2  { grid-column: span 2; }
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-6  { grid-column: span 6; }
+.col-8  { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+/* ============================================================
+   KPI CARDS
+   ============================================================ */
+.kpi {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.kpi:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+.kpi-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.kpi-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.kpi-label-icon {
+  width: 24px; height: 24px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
+  flex-shrink: 0;
+}
+.kpi-label-icon svg { width: 14px; height: 14px; }
+.kpi-menu {
+  width: 24px; height: 24px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-gray-400);
+  transition: all 0.12s;
+  flex-shrink: 0;
+  opacity: 0;
+}
+.kpi:hover .kpi-menu { opacity: 1; }
+.kpi-menu:hover { background: var(--color-gray-100); color: var(--color-gray-700); }
+.kpi-menu svg { width: 14px; height: 14px; }
+
+.kpi-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-1);
+}
+.kpi-value-sm { font-size: 22px; line-height: 30px; }
+
+.kpi-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+.kpi-trend.up { color: var(--color-success-700); }
+.kpi-trend.down { color: var(--color-danger-700); }
+.kpi-trend.flat { color: var(--color-gray-500); }
+.kpi-trend svg { width: 12px; height: 12px; }
+.kpi-trend-context {
+  color: var(--color-gray-400);
+  font-weight: 400;
+  margin-left: var(--space-1);
+}
+
+.kpi-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-gray-500);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+.kpi-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary-600);
+  font-weight: 500;
+  font-size: 12px;
+  transition: color 0.12s;
+}
+.kpi-footer-link:hover { color: var(--color-primary-700); }
+.kpi-footer-link svg { width: 12px; height: 12px; }
+
+/* Sparkline */
+.kpi-sparkline { height: 32px; margin: var(--space-2) 0; }
+
+/* Progress bar in KPI */
+.kpi-progress {
+  height: 6px;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin: var(--space-2) 0;
+}
+.kpi-progress-bar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-500);
+  transition: width 0.6s ease;
+}
+.kpi-progress-bar.success { background: var(--color-success-500); }
+.kpi-progress-bar.warning { background: var(--color-warning-500); }
+.kpi-progress-bar.danger  { background: var(--color-danger-500); }
+
+/* KPI Badge */
+.kpi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.kpi-badge.success { background: var(--color-success-50); color: var(--color-success-700); }
+.kpi-badge.warning { background: var(--color-warning-50); color: var(--color-warning-700); }
+.kpi-badge.danger  { background: var(--color-danger-50); color: var(--color-danger-700); }
+.kpi-badge.info    { background: var(--color-primary-50); color: var(--color-primary-700); }
+
+/* KPI Breakdown */
+.kpi-breakdown {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+.kpi-breakdown-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.kpi-breakdown-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-gray-400);
+  font-weight: 600;
+}
+.kpi-breakdown-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+/* KPI Ranking */
+.kpi-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--color-gray-100);
+  color: var(--color-gray-600);
+}
+.kpi-rank.gold   { background: #FEF3C7; color: #B45309; }
+.kpi-rank.silver { background: #F1F5F9; color: #475569; }
+.kpi-rank.bronze { background: #FEF3C7; color: #92400E; }
+
+/* KPI Skeleton */
+.kpi-skeleton .skel {
+  background: linear-gradient(90deg, var(--color-gray-100) 25%, var(--color-gray-200) 50%, var(--color-gray-100) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skel-line { height: 12px; margin-bottom: var(--space-2); }
+.skel-line.w-40 { width: 40%; }
+.skel-line.w-60 { width: 60%; }
+.skel-line.w-80 { width: 80%; }
+.skel-value { height: 28px; width: 50%; margin: var(--space-2) 0; }
+
+/* KPI Empty */
+.kpi-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+}
+.kpi-empty-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--color-gray-100);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-gray-400);
+  margin-bottom: var(--space-3);
+}
+.kpi-empty-icon svg { width: 20px; height: 20px; }
+.kpi-empty-title { font-size: 13px; font-weight: 600; color: var(--color-gray-700); margin-bottom: 2px; }
+.kpi-empty-desc { font-size: 12px; color: var(--color-gray-500); }
+
+/* ============================================================
+   CHART CARD
+   ============================================================ */
+.chart-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+.chart-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+.chart-card-header {
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.chart-card-title-group { min-width: 0; flex: 1; }
+.chart-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin-bottom: 2px;
+  letter-spacing: -0.005em;
+}
+.chart-card-subtitle {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  line-height: 16px;
+}
+.chart-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+.chart-card-action {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-gray-400);
+  transition: all 0.12s;
+}
+.chart-card-action:hover { background: var(--color-gray-100); color: var(--color-gray-700); }
+.chart-card-action svg { width: 14px; height: 14px; }
+
+.chart-card-body {
+  padding: 0 var(--space-4) var(--space-4);
+  flex: 1;
+  position: relative;
+}
+
+.chart-card-footer {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 12px;
+  color: var(--color-gray-500);
+  background: var(--color-gray-25);
+}
+.chart-insight {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-gray-600);
+  font-size: 12px;
+  line-height: 16px;
+}
+.chart-insight svg { width: 14px; height: 14px; color: var(--color-primary-500); flex-shrink: 0; margin-top: 1px; }
+
+/* Legend */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+.legend-item:hover { opacity: 0.8; }
+.legend-swatch {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.legend-swatch.line {
+  width: 16px; height: 2px;
+  border-radius: 1px;
+}
+.legend-swatch.dashed {
+  width: 16px; height: 0;
+  border-top: 2px dashed currentColor;
+  background: transparent !important;
+}
+
+/* Chart SVG base */
+.chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart-grid-line { stroke: var(--chart-grid); stroke-width: 1; }
+.chart-axis-line { stroke: var(--border-default); stroke-width: 1; }
+.chart-axis-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  fill: var(--chart-axis);
+  font-weight: 500;
+}
+.chart-value-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  fill: var(--color-gray-600);
+  font-weight: 600;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.table-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.table-header {
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--border-default);
+}
+.table-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+.table-subtitle {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  margin-top: 2px;
+}
+.table-wrap { overflow-x: auto; }
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table.data-table thead th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-gray-500);
+  background: var(--color-gray-25);
+  border-bottom: 1px solid var(--border-default);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+table.data-table thead th.sortable { cursor: pointer; user-select: none; }
+table.data-table thead th.sortable:hover { color: var(--color-gray-700); background: var(--color-gray-50); }
+table.data-table thead th .th-inner { display: inline-flex; align-items: center; gap: 4px; }
+table.data-table thead th svg { width: 12px; height: 12px; opacity: 0.5; }
+table.data-table tbody td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--color-gray-700);
+  vertical-align: middle;
+}
+table.data-table tbody tr { transition: background 0.1s; }
+table.data-table tbody tr:hover { background: var(--color-gray-25); }
+table.data-table tbody tr:last-child td { border-bottom: none; }
+
+.cell-primary { font-weight: 600; color: var(--color-gray-900); }
+.cell-mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+.cell-muted { color: var(--color-gray-500); }
+
+.avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+.avatar-sm { width: 24px; height: 24px; font-size: 10px; }
+.avatar-lg { width: 36px; height: 36px; font-size: 13px; }
+.cell-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.cell-user-info { display: flex; flex-direction: column; }
+.cell-user-name { font-weight: 600; color: var(--color-gray-900); font-size: 13px; }
+.cell-user-sub { font-size: 11px; color: var(--color-gray-500); }
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.status-pill::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status-pill.active    { background: var(--color-success-50); color: var(--color-success-700); }
+.status-pill.pending   { background: var(--color-warning-50); color: var(--color-warning-700); }
+.status-pill.closed    { background: var(--color-gray-100); color: var(--color-gray-600); }
+.status-pill.rejected  { background: var(--color-danger-50); color: var(--color-danger-700); }
+.status-pill.info      { background: var(--color-primary-50); color: var(--color-primary-700); }
+
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-default);
+  font-size: 12px;
+  color: var(--color-gray-500);
+}
+.pagination-controls { display: flex; align-items: center; gap: var(--space-1); }
+.page-btn {
+  min-width: 28px; height: 28px;
+  padding: 0 6px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  transition: all 0.12s;
+}
+.page-btn:hover { background: var(--color-gray-100); color: var(--color-gray-900); }
+.page-btn.active { background: var(--color-primary-600); color: white; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ============================================================
+   FUNNEL
+   ============================================================ */
+.funnel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+}
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.funnel-bar-wrap {
+  flex: 1;
+  height: 36px;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+.funnel-bar {
+  height: 100%;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  transition: width 0.6s ease;
+  min-width: 60px;
+}
+.funnel-label {
+  width: 120px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  text-align: right;
+  flex-shrink: 0;
+}
+.funnel-value {
+  width: 80px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  text-align: right;
+  flex-shrink: 0;
+}
+.funnel-pct {
+  width: 56px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   HEATMAP
+   ============================================================ */
+.heatmap {
+  display: grid;
+  gap: 3px;
+}
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  transition: transform 0.12s;
+  cursor: pointer;
+}
+.heatmap-cell:hover { transform: scale(1.3); z-index: 2; }
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 11px;
+  color: var(--color-gray-500);
+  margin-top: var(--space-3);
+}
+.heatmap-legend-scale { display: flex; gap: 2px; }
+.heatmap-legend-box {
+  width: 12px; height: 12px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   PROGRESS / GAUGE
+   ============================================================ */
+.gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4) 0;
+}
+.gauge-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-top: -20px;
+}
+.gauge-label {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  margin-top: var(--space-1);
+}
+
+/* ============================================================
+   FUNNEL HORIZONTAL
+   ============================================================ */
+.funnel-h {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-4) 0;
+}
+.funnel-h-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.funnel-h-shape {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%, 12px 50%);
+}
+.funnel-h-step:first-child .funnel-h-shape {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+}
+.funnel-h-step:last-child .funnel-h-shape {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 12px 50%);
+}
+.funnel-h-label {
+  font-size: 11px;
+  color: var(--color-gray-500);
+  margin-top: var(--space-2);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ============================================================
+   COMPARISON MATRIX
+   ============================================================ */
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.matrix th, .matrix td {
+  padding: var(--space-2) var(--space-3);
+  text-align: center;
+  border: 1px solid var(--border-subtle);
+}
+.matrix th {
+  background: var(--color-gray-25);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-gray-500);
+}
+.matrix td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  background: var(--color-gray-25);
+}
+.matrix-cell {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+}
+
+/* ============================================================
+   COHORT TABLE
+   ============================================================ */
+.cohort-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: 12px;
+}
+.cohort-table th {
+  padding: var(--space-2);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  text-align: center;
+}
+.cohort-table td {
+  padding: var(--space-2);
+  text-align: center;
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 11px;
+}
+.cohort-table td:first-child {
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  background: var(--color-gray-50);
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline {
+  position: relative;
+  padding-left: var(--space-6);
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px; top: 4px; bottom: 4px;
+  width: 2px;
+  background: var(--border-default);
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: var(--space-4);
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-dot {
+  position: absolute;
+  left: -22px; top: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--surface-card);
+  border: 2px solid var(--color-primary-500);
+  display: flex; align-items: center; justify-content: center;
+}
+.timeline-dot.success { border-color: var(--color-success-500); }
+.timeline-dot.warning { border-color: var(--color-warning-500); }
+.timeline-dot.danger  { border-color: var(--color-danger-500); }
+.timeline-dot svg { width: 8px; height: 8px; color: var(--color-primary-500); }
+.timeline-time {
+  font-size: 11px;
+  color: var(--color-gray-400);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.timeline-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin-bottom: 2px;
+}
+.timeline-desc {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  line-height: 16px;
+}
+
+/* ============================================================
+   ACTIVITY FEED
+   ============================================================ */
+.activity-item {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-content { flex: 1; min-width: 0; }
+.activity-text {
+  font-size: 13px;
+  color: var(--color-gray-700);
+  line-height: 18px;
+}
+.activity-text strong { color: var(--color-gray-900); font-weight: 600; }
+.activity-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--color-gray-400);
+}
+
+/* ============================================================
+   TAG / BADGE
+   ============================================================ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--color-gray-100);
+  color: var(--color-gray-600);
+}
+.tag.primary { background: var(--color-primary-50); color: var(--color-primary-700); }
+.tag.success { background: var(--color-success-50); color: var(--color-success-700); }
+.tag.warning { background: var(--color-warning-50); color: var(--color-warning-700); }
+.tag.danger  { background: var(--color-danger-50); color: var(--color-danger-700); }
+
+/* ============================================================
+   STATE PAGES
+   ============================================================ */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+}
+.state-icon {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-xl);
+  background: var(--color-gray-100);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-gray-400);
+  margin-bottom: var(--space-4);
+}
+.state-icon svg { width: 28px; height: 28px; }
+.state-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-1);
+}
+.state-desc {
+  font-size: 13px;
+  color: var(--color-gray-500);
+  max-width: 360px;
+  line-height: 18px;
+  margin-bottom: var(--space-4);
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--border-default);
+  margin-bottom: var(--space-4);
+  overflow-x: auto;
+}
+.tab {
+  padding: var(--space-2) var(--space-3);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  border-bottom: 2px solid transparent;
+  transition: all 0.12s;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+.tab:hover { color: var(--color-gray-700); }
+.tab.active {
+  color: var(--color-primary-700);
+  border-bottom-color: var(--color-primary-600);
+  font-weight: 600;
+}
+
+/* ============================================================
+   SCATTER / BUBBLE
+   ============================================================ */
+.scatter-dot { transition: r 0.15s; cursor: pointer; }
+.scatter-dot:hover { r: 7; }
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+.text-xs { font-size: 11px; }
+.text-sm { font-size: 12px; }
+.text-muted { color: var(--color-gray-500); }
+.text-success { color: var(--color-success-700); }
+.text-danger { color: var(--color-danger-700); }
+.text-warning { color: var(--color-warning-700); }
+.text-primary { color: var(--color-primary-600); }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1280px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .col-3 { grid-column: span 6; }
+}
+@media (max-width: 1024px) {
+  .app { grid-template-columns: var(--sidebar-collapsed) 1fr; }
+  .sidebar-brand, .nav-item-label, .nav-item-shortcut, .nav-item-badge,
+  .nav-section-title, .nav-section-count, .nav-item-dot { display: none; }
+  .nav-section-header { justify-content: center; padding: var(--space-2); }
+  .nav-item { justify-content: center; padding: var(--space-2); }
+  .nav-section-items { padding-left: 0; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .col-4 { grid-column: span 6; }
+  .col-8 { grid-column: span 12; }
+}
+@media (max-width: 768px) {
+  .content { padding: var(--space-4); }
+  .header-inner { padding: var(--space-4); }
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
+  .header-top { flex-direction: column; }
+  .filter-actions { margin-left: 0; width: 100%; flex-wrap: wrap; }
+  .search-box { max-width: none; }
+  .kpi-value { font-size: 24px; line-height: 32px; }
+  .funnel-label { width: 80px; font-size: 11px; }
+  .funnel-value { width: 60px; font-size: 11px; }
+  .funnel-pct { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">B</div>
+      <div class="sidebar-brand">
+        <span class="sidebar-brand-name">BenchFlow</span>
+        <span class="sidebar-brand-sub">Analytics</span>
+      </div>
+      <button class="sidebar-toggle" onclick="document.getElementById('app').classList.toggle('collapsed')" aria-label="Toggle sidebar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Dashboard Builder</span>
+      </div>
+      <div class="sidebar-footer-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Analytics Settings</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       MAIN
+       ============================================================ -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-inner">
+        <nav class="breadcrumb">
+          <a href="#">Analytics</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="#">Candidates</a>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">Candidate Overview</span>
+        </nav>
+
+        <div class="header-top">
+          <div class="header-title-group">
+            <h1 class="header-title">Candidate Overview</h1>
+            <p class="header-desc">Track candidate pipeline health, conversion rates, and placement velocity across your bench sales operation.</p>
+          </div>
+          <div class="header-meta">
+            <span class="header-updated">
+              <span class="live-dot"></span>
+              Live · updated 2m ago
+            </span>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <button class="filter-chip active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Last 30 days
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <button class="filter-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            Compare: Previous period
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <button class="filter-chip">
+            Candidate
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <button class="filter-chip">
+            Vendor
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <button class="filter-chip">
+            Technology
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search candidates, vendors, jobs..." />
+          </div>
+
+          <div class="filter-actions">
+            <button class="btn btn-ghost btn-icon" title="Refresh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+            <button class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+            <button class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save Report
+            </button>
+          </div>
+        </div>
+
+        <div class="active-filters">
+          <span class="active-filters-label">Active:</span>
+          <span class="active-filter-tag">
+            Vendor: CyberCoders
+            <button aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </span>
+          <span class="active-filter-tag">
+            Technology: React
+            <button aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </span>
+          <span class="active-filter-tag">
+            Status: Active
+            <button aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </span>
+          <button class="clear-all">Clear all</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ===== KPI ROW ===== -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-title-group">
+            <h2 class="section-title">Key Metrics</h2>
+            <span class="section-subtitle">Last 30 days vs previous period</span>
+          </div>
+          <div class="section-actions">
+            <button class="btn btn-ghost">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-4">
+          <!-- KPI 1: Total Candidates -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+                Total Candidates
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">1,247</div>
+            <div class="kpi-trend up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +12.5% <span class="kpi-trend-context">vs prev period</span>
+            </div>
+            <div class="kpi-sparkline">
+              <svg class="chart-svg" viewBox="0 0 200 32" preserveAspectRatio="none">
+                <defs><linearGradient id="sp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.25"/><stop offset="100%" stop-color="#3B82F6" stop-opacity="0"/></linearGradient></defs>
+                <path d="M0 24 L20 22 L40 20 L60 21 L80 16 L100 14 L120 15 L140 10 L160 8 L180 6 L200 4 L200 32 L0 32 Z" fill="url(#sp1)"/>
+                <path d="M0 24 L20 22 L40 20 L60 21 L80 16 L100 14 L120 15 L140 10 L160 8 L180 6 L200 4" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- KPI 2: Active Candidates -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon" style="background:#ECFDF5;color:#047857;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </span>
+                Active Candidates
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">892</div>
+            <div class="kpi-trend up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +8.2% <span class="kpi-trend-context">vs prev period</span>
+            </div>
+            <div class="kpi-progress">
+              <div class="kpi-progress-bar success" style="width: 71.5%"></div>
+            </div>
+            <div class="kpi-footer">
+              <span>71.5% of total candidates</span>
+              <a class="kpi-footer-link" href="#">View <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+            </div>
+          </div>
+
+          <!-- KPI 3: Placements -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon" style="background:#F5F3FF;color:#7C3AED;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </span>
+                Placements
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">147</div>
+            <div class="kpi-trend up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +23.1% <span class="kpi-trend-context">vs prev period</span>
+            </div>
+            <div class="kpi-breakdown">
+              <div class="kpi-breakdown-item">
+                <span class="kpi-breakdown-label">Contract</span>
+                <span class="kpi-breakdown-value">98</span>
+              </div>
+              <div class="kpi-breakdown-item">
+                <span class="kpi-breakdown-label">Full-time</span>
+                <span class="kpi-breakdown-value">49</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 4: Conversion Rate -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon" style="background:#FFFBEB;color:#B45309;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </span>
+                Conversion Rate
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">11.8%</div>
+            <div class="kpi-trend up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +1.4pp <span class="kpi-trend-context">vs prev period</span>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-badge success">Above target</span>
+              <span>Target: 10.0%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECONDARY KPIs ===== -->
+      <section class="section">
+        <div class="grid grid-4">
+          <!-- KPI 5: Submissions -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon" style="background:#EFF6FF;color:#2563EB;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </span>
+                Submissions
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">3,421</div>
+            <div class="kpi-trend up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +15.3%
+            </div>
+            <div class="kpi-footer">
+              <span>2.74 per candidate</span>
+              <a class="kpi-footer-link" href="#">Drill down →</a>
+            </div>
+          </div>
+
+          <!-- KPI 6: Interviews -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon" style="background:#ECFEFF;color:#0891B2;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </span>
+                Interviews
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">684</div>
+            <div class="kpi-trend up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +9.7%
+            </div>
+            <div class="kpi-footer">
+              <span>20.0% submission → interview</span>
+            </div>
+          </div>
+
+          <!-- KPI 7: Matches -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon" style="background:#F5F3FF;color:#7C3AED;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </span>
+                Matches
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">312</div>
+            <div class="kpi-trend down">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              -3.2%
+            </div>
+            <div class="kpi-footer">
+              <span>45.6% interview → match</span>
+            </div>
+          </div>
+
+          <!-- KPI 8: Avg Time to Placement -->
+          <div class="kpi">
+            <div class="kpi-header">
+              <div class="kpi-label">
+                <span class="kpi-label-icon" style="background:#FEF2F2;color:#B91C1C;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </span>
+                Avg Time to Placement
+              </div>
+              <button class="kpi-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="kpi-value">18.4<span style="font-size:14px;font-weight:500;color:var(--color-gray-500);margin-left:4px;">days</span></div>
+            <div class="kpi-trend up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              -2.1 days
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-badge success">Faster</span>
+              <span>Benchmark: 21 days</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PERFORMANCE TREND ===== -->
+      <section class="section">
+        <div class="grid grid-12">
+          <div class="col-8">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Overall Performance Trend</div>
+                  <div class="chart-card-subtitle">Submissions, interviews, matches, and placements over time</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action" title="View data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                  <button class="chart-card-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+                  <button class="chart-card-action" title="Expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+                  <button class="chart-card-action" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-swatch line" style="background:#3B82F6;"></span> Submissions</span>
+                  <span class="legend-item"><span class="legend-swatch line" style="background:#10B981;"></span> Interviews</span>
+                  <span class="legend-item"><span class="legend-swatch line" style="background:#F59E0B;"></span> Matches</span>
+                  <span class="legend-item"><span class="legend-swatch line" style="background:#8B5CF6;"></span> Placements</span>
+                </div>
+                <svg class="chart-svg" viewBox="0 0 720 260" preserveAspectRatio="none" style="height:260px;">
+                  <!-- Grid -->
+                  <g>
+                    <line class="chart-grid-line" x1="40" y1="20" x2="700" y2="20"/>
+                    <line class="chart-grid-line" x1="40" y1="70" x2="700" y2="70"/>
+                    <line class="chart-grid-line" x1="40" y1="120" x2="700" y2="120"/>
+                    <line class="chart-grid-line" x1="40" y1="170" x2="700" y2="170"/>
+                    <line class="chart-grid-line" x1="40" y1="220" x2="700" y2="220"/>
+                    <line class="chart-axis-line" x1="40" y1="220" x2="700" y2="220"/>
+                  </g>
+                  <!-- Y-axis labels -->
+                  <g class="chart-axis-label">
+                    <text x="32" y="24" text-anchor="end">400</text>
+                    <text x="32" y="74" text-anchor="end">300</text>
+                    <text x="32" y="124" text-anchor="end">200</text>
+                    <text x="32" y="174" text-anchor="end">100</text>
+                    <text x="32" y="224" text-anchor="end">0</text>
+                  </g>
+                  <!-- X-axis labels -->
+                  <g class="chart-axis-label">
+                    <text x="60" y="240" text-anchor="middle">Jan 1</text>
+                    <text x="160" y="240" text-anchor="middle">Jan 7</text>
+                    <text x="260" y="240" text-anchor="middle">Jan 14</text>
+                    <text x="360" y="240" text-anchor="middle">Jan 21</text>
+                    <text x="460" y="240" text-anchor="middle">Jan 28</text>
+                    <text x="560" y="240" text-anchor="middle">Feb 4</text>
+                    <text x="660" y="240" text-anchor="middle">Feb 11</text>
+                  </g>
+                  <!-- Submissions line -->
+                  <path d="M60 170 L160 150 L260 140 L360 120 L460 110 L560 95 L660 80" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Interviews line -->
+                  <path d="M60 195 L160 185 L260 178 L360 170 L460 165 L560 155 L660 148" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Matches line -->
+                  <path d="M60 210 L160 205 L260 200 L360 195 L460 190 L560 185 L660 182" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Placements line -->
+                  <path d="M60 216 L160 214 L260 212 L360 208 L460 205 L560 200 L660 195" fill="none" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Dots -->
+                  <circle cx="660" cy="80" r="4" fill="#3B82F6" stroke="white" stroke-width="2"/>
+                  <circle cx="660" cy="148" r="4" fill="#10B981" stroke="white" stroke-width="2"/>
+                  <circle cx="660" cy="182" r="4" fill="#F59E0B" stroke="white" stroke-width="2"/>
+                  <circle cx="660" cy="195" r="4" fill="#8B5CF6" stroke="white" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="chart-card-footer">
+                <div class="chart-insight">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  <span><strong>Insight:</strong> Submissions grew 15.3% while placements grew 23.1%, indicating improved conversion efficiency.</span>
+                </div>
+                <span class="text-muted text-xs">Jan 1 – Feb 11, 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column: Funnel -->
+          <div class="col-4">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Recruitment Funnel</div>
+                  <div class="chart-card-subtitle">Conversion at each stage</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action" title="Expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+                  <button class="chart-card-action" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <div class="funnel">
+                  <div class="funnel-step">
+                    <div class="funnel-label">Candidates</div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%;background:#3B82F6;">1,247</div></div>
+                    <div class="funnel-value">1,247</div>
+                    <div class="funnel-pct">100%</div>
+                  </div>
+                  <div class="funnel-step">
+                    <div class="funnel-label">Submissions</div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:82%;background:#6366F1;">3,421</div></div>
+                    <div class="funnel-value">3,421</div>
+                    <div class="funnel-pct">274%</div>
+                  </div>
+                  <div class="funnel-step">
+                    <div class="funnel-label">Shortlisted</div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:52%;background:#8B5CF6;">1,248</div></div>
+                    <div class="funnel-value">1,248</div>
+                    <div class="funnel-pct">36.5%</div>
+                  </div>
+                  <div class="funnel-step">
+                    <div class="funnel-label">Interviews</div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:32%;background:#06B6D4;">684</div></div>
+                    <div class="funnel-value">684</div>
+                    <div class="funnel-pct">20.0%</div>
+                  </div>
+                  <div class="funnel-step">
+                    <div class="funnel-label">Matches</div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:18%;background:#F59E0B;">312</div></div>
+                    <div class="funnel-value">312</div>
+                    <div class="funnel-pct">45.6%</div>
+                  </div>
+                  <div class="funnel-step">
+                    <div class="funnel-label">Placements</div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:9%;background:#10B981;">147</div></div>
+                    <div class="funnel-value">147</div>
+                    <div class="funnel-pct">47.1%</div>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-card-footer">
+                <div class="chart-insight">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  <span>End-to-end conversion: <strong>11.8%</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CHARTS ROW 2 ===== -->
+      <section class="section">
+        <div class="grid grid-12">
+          <!-- Candidate Status Distribution (Donut) -->
+          <div class="col-4">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Candidate Status</div>
+                  <div class="chart-card-subtitle">Distribution by current status</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <div style="display:flex;align-items:center;gap:16px;">
+                  <svg viewBox="0 0 160 160" style="width:160px;height:160px;flex-shrink:0;">
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#F3F4F6" stroke-width="20"/>
+                    <!-- Active 45% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#3B82F6" stroke-width="20" stroke-dasharray="169.6 376.8" stroke-dashoffset="0" transform="rotate(-90 80 80)"/>
+                    <!-- Available 28% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#10B981" stroke-width="20" stroke-dasharray="105.5 441" stroke-dashoffset="-169.6" transform="rotate(-90 80 80)"/>
+                    <!-- Placed 15% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#8B5CF6" stroke-width="20" stroke-dasharray="56.5 490" stroke-dashoffset="-275.1" transform="rotate(-90 80 80)"/>
+                    <!-- On Hold 12% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#F59E0B" stroke-width="20" stroke-dasharray="45.2 501.3" stroke-dashoffset="-331.6" transform="rotate(-90 80 80)"/>
+                    <text x="80" y="76" text-anchor="middle" font-family="JetBrains Mono" font-size="22" font-weight="700" fill="#111827">1,247</text>
+                    <text x="80" y="94" text-anchor="middle" font-family="Inter" font-size="11" fill="#6B7280" font-weight="500">Total</text>
+                  </svg>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+                    <div class="legend-item"><span class="legend-swatch" style="background:#3B82F6;"></span> Active <span style="margin-left:auto;font-weight:600;font-family:JetBrains Mono;">561</span></div>
+                    <div class="legend-item"><span class="legend-swatch" style="background:#10B981;"></span> Available <span style="margin-left:auto;font-weight:600;font-family:JetBrains Mono;">349</span></div>
+                    <div class="legend-item"><span class="legend-swatch" style="background:#8B5CF6;"></span> Placed <span style="margin-left:auto;font-weight:600;font-family:JetBrains Mono;">187</span></div>
+                    <div class="legend-item"><span class="legend-swatch" style="background:#F59E0B;"></span> On Hold <span style="margin-left:auto;font-weight:600;font-family:JetBrains Mono;">150</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vendor Performance (Horizontal Bar) -->
+          <div class="col-4">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Top Vendors</div>
+                  <div class="chart-card-subtitle">By placements (last 30 days)</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <div style="display:flex;flex-direction:column;gap:12px;padding:8px 0;">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="font-weight:600;color:var(--color-gray-700);">CyberCoders</span><span style="font-family:JetBrains Mono;font-weight:600;">42</span></div>
+                    <div style="height:8px;background:var(--color-gray-100);border-radius:4px;overflow:hidden;"><div style="width:100%;height:100%;background:#3B82F6;border-radius:4px;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="font-weight:600;color:var(--color-gray-700);">Robert Half</span><span style="font-family:JetBrains Mono;font-weight:600;">36</span></div>
+                    <div style="height:8px;background:var(--color-gray-100);border-radius:4px;overflow:hidden;"><div style="width:85.7%;height:100%;background:#10B981;border-radius:4px;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="font-weight:600;color:var(--color-gray-700);">TEKsystems</span><span style="font-family:JetBrains Mono;font-weight:600;">28</span></div>
+                    <div style="height:8px;background:var(--color-gray-100);border-radius:4px;overflow:hidden;"><div style="width:66.7%;height:100%;background:#F59E0B;border-radius:4px;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="font-weight:600;color:var(--color-gray-700);">Insight Global</span><span style="font-family:JetBrains Mono;font-weight:600;">21</span></div>
+                    <div style="height:8px;background:var(--color-gray-100);border-radius:4px;overflow:hidden;"><div style="width:50%;height:100%;background:#8B5CF6;border-radius:4px;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="font-weight:600;color:var(--color-gray-700);">Apex Systems</span><span style="font-family:JetBrains Mono;font-weight:600;">20</span></div>
+                    <div style="height:8px;background:var(--color-gray-100);border-radius:4px;overflow:hidden;"><div style="width:47.6%;height:100%;background:#06B6D4;border-radius:4px;"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Technology Distribution (Treemap-style) -->
+          <div class="col-4">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Technology Demand</div>
+                  <div class="chart-card-subtitle">By submission volume</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4px;height:200px;">
+                  <div style="background:#3B82F6;border-radius:6px;padding:12px;color:white;display:flex;flex-direction:column;justify-content:space-between;grid-row:span 2;">
+                    <span style="font-size:12px;font-weight:600;opacity:0.9;">React</span>
+                    <div><div style="font-family:JetBrains Mono;font-size:20px;font-weight:700;">842</div><div style="font-size:10px;opacity:0.8;">24.6%</div></div>
+                  </div>
+                  <div style="background:#10B981;border-radius:6px;padding:12px;color:white;display:flex;flex-direction:column;justify-content:space-between;">
+                    <span style="font-size:11px;font-weight:600;opacity:0.9;">Java</span>
+                    <div><div style="font-family:JetBrains Mono;font-size:16px;font-weight:700;">621</div><div style="font-size:10px;opacity:0.8;">18.2%</div></div>
+                  </div>
+                  <div style="background:#F59E0B;border-radius:6px;padding:12px;color:white;display:flex;flex-direction:column;justify-content:space-between;">
+                    <span style="font-size:11px;font-weight:600;opacity:0.9;">Python</span>
+                    <div><div style="font-family:JetBrains Mono;font-size:16px;font-weight:700;">548</div><div style="font-size:10px;opacity:0.8;">16.0%</div></div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-top:4px;">
+                  <div style="background:#8B5CF6;border-radius:6px;padding:8px;color:white;">
+                    <div style="font-size:10px;font-weight:600;opacity:0.9;">AWS</div>
+                    <div style="font-family:JetBrains Mono;font-size:13px;font-weight:700;">412</div>
+                  </div>
+                  <div style="background:#06B6D4;border-radius:6px;padding:8px;color:white;">
+                    <div style="font-size:10px;font-weight:600;opacity:0.9;">Node.js</div>
+                    <div style="font-family:JetBrains Mono;font-size:13px;font-weight:700;">387</div>
+                  </div>
+                  <div style="background:#EC4899;border-radius:6px;padding:8px;color:white;">
+                    <div style="font-size:10px;font-weight:600;opacity:0.9;">Other</div>
+                    <div style="font-family:JetBrains Mono;font-size:13px;font-weight:700;">611</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HEATMAP + SCATTER ===== -->
+      <section class="section">
+        <div class="grid grid-12">
+          <!-- Activity Heatmap -->
+          <div class="col-6">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Candidate Activity Heatmap</div>
+                  <div class="chart-card-subtitle">Submissions by day and hour</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <div class="heatmap" id="heatmap" style="grid-template-columns:40px repeat(12, 1fr);"></div>
+                <div class="heatmap-legend">
+                  <span>Less</span>
+                  <div class="heatmap-legend-scale">
+                    <div class="heatmap-legend-box" style="background:#EFF6FF;"></div>
+                    <div class="heatmap-legend-box" style="background:#DBEAFE;"></div>
+                    <div class="heatmap-legend-box" style="background:#93C5FD;"></div>
+                    <div class="heatmap-legend-box" style="background:#3B82F6;"></div>
+                    <div class="heatmap-legend-box" style="background:#1D4ED8;"></div>
+                  </div>
+                  <span>More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scatter Plot -->
+          <div class="col-6">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Candidate Performance Matrix</div>
+                  <div class="chart-card-subtitle">Submissions vs placements by candidate</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <svg class="chart-svg" viewBox="0 0 500 260" style="height:260px;">
+                  <!-- Grid -->
+                  <line class="chart-grid-line" x1="50" y1="20" x2="480" y2="20"/>
+                  <line class="chart-grid-line" x1="50" y1="70" x2="480" y2="70"/>
+                  <line class="chart-grid-line" x1="50" y1="120" x2="480" y2="120"/>
+                  <line class="chart-grid-line" x1="50" y1="170" x2="480" y2="170"/>
+                  <line class="chart-axis-line" x1="50" y1="220" x2="480" y2="220"/>
+                  <line class="chart-axis-line" x1="50" y1="20" x2="50" y2="220"/>
+                  <!-- Y-axis -->
+                  <g class="chart-axis-label">
+                    <text x="42" y="24" text-anchor="end">10</text>
+                    <text x="42" y="74" text-anchor="end">8</text>
+                    <text x="42" y="124" text-anchor="end">6</text>
+                    <text x="42" y="174" text-anchor="end">4</text>
+                    <text x="42" y="224" text-anchor="end">2</text>
+                  </g>
+                  <!-- X-axis -->
+                  <g class="chart-axis-label">
+                    <text x="80" y="240" text-anchor="middle">0</text>
+                    <text x="160" y="240" text-anchor="middle">5</text>
+                    <text x="240" y="240" text-anchor="middle">10</text>
+                    <text x="320" y="240" text-anchor="middle">15</text>
+                    <text x="400" y="240" text-anchor="middle">20</text>
+                    <text x="470" y="240" text-anchor="middle">25</text>
+                  </g>
+                  <!-- X label -->
+                  <text x="265" y="256" text-anchor="middle" font-family="Inter" font-size="11" fill="#6B7280" font-weight="500">Submissions →</text>
+                  <!-- Y label -->
+                  <text x="16" y="120" text-anchor="middle" font-family="Inter" font-size="11" fill="#6B7280" font-weight="500" transform="rotate(-90 16 120)">Placements →</text>
+                  <!-- Dots -->
+                  <circle class="scatter-dot" cx="120" cy="170" r="5" fill="#3B82F6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="180" cy="140" r="5" fill="#3B82F6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="220" cy="120" r="6" fill="#10B981" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="280" cy="100" r="5" fill="#3B82F6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="320" cy="90" r="7" fill="#F59E0B" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="360" cy="70" r="6" fill="#10B981" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="400" cy="60" r="8" fill="#8B5CF6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="440" cy="50" r="6" fill="#3B82F6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="260" cy="130" r="4" fill="#3B82F6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="340" cy="110" r="5" fill="#3B82F6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="200" cy="160" r="4" fill="#3B82F6" opacity="0.7"/>
+                  <circle class="scatter-dot" cx="380" cy="85" r="6" fill="#3B82F6" opacity="0.7"/>
+                </svg>
+                <div class="chart-legend" style="justify-content:center;margin-top:8px;">
+                  <span class="legend-item"><span class="legend-swatch" style="background:#3B82F6;border-radius:50%;"></span> Candidate</span>
+                  <span class="legend-item"><span class="legend-swatch" style="background:#10B981;border-radius:50%;"></span> High performer</span>
+                  <span class="legend-item"><span class="legend-swatch" style="background:#F59E0B;border-radius:50%;"></span> Top performer</span>
+                  <span class="legend-item"><span class="legend-swatch" style="background:#8B5CF6;border-radius:50%;"></span> Elite</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TOP PERFORMERS TABLE ===== -->
+      <section class="section">
+        <div class="table-card">
+          <div class="table-header">
+            <div>
+              <div class="table-title">Top Performing Candidates</div>
+              <div class="table-subtitle">Ranked by placement rate in the last 30 days</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                Columns
+              </button>
+              <button class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px;"><input type="checkbox" style="accent-color:var(--color-primary-600);"></th>
+                  <th class="sortable"><span class="th-inner"># <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+                  <th class="sortable"><span class="th-inner">Candidate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+                  <th class="sortable"><span class="th-inner">Technology <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+                  <th class="sortable"><span class="th-inner">Submissions <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+                  <th class="sortable"><span class="th-inner">Interviews <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+                  <th class="sortable"><span class="th-inner">Placements <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+                  <th class="sortable"><span class="th-inner">Conversion <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+                  <th>Status</th>
+                  <th style="width:40px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" style="accent-color:var(--color-primary-600);"></td>
+                  <td><span class="kpi-rank gold">1</span></td>
+                  <td>
+                    <div class="cell-user">
+                      <span class="avatar" style="background:#3B82F6;">SC</span>
+                      <div class="cell-user-info">
+                        <span class="cell-user-name">Sarah Chen</span>
+                        <span class="cell-user-sub">sarah.chen@email.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="tag primary">React</span> <span class="tag">Node.js</span></td>
+                  <td class="cell-mono">24</td>
+                  <td class="cell-mono">18</td>
+                  <td class="cell-mono" style="font-weight:700;color:var(--color-success-700);">8</td>
+                  <td><span class="status-pill active">33.3%</span></td>
+                  <td><span class="status-pill active">Placed</span></td>
+                  <td><button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="accent-color:var(--color-primary-600);"></td>
+                  <td><span class="kpi-rank silver">2</span></td>
+                  <td>
+                    <div class="cell-user">
+                      <span class="avatar" style="background:#10B981;">MJ</span>
+                      <div class="cell-user-info">
+                        <span class="cell-user-name">Michael Johnson</span>
+                        <span class="cell-user-sub">m.johnson@email.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="tag success">Java</span> <span class="tag">Spring</span></td>
+                  <td class="cell-mono">22</td>
+                  <td class="cell-mono">15</td>
+                  <td class="cell-mono" style="font-weight:700;color:var(--color-success-700);">7</td>
+                  <td><span class="status-pill active">31.8%</span></td>
+                  <td><span class="status-pill active">Placed</span></td>
+                  <td><button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="accent-color:var(--color-primary-600);"></td>
+                  <td><span class="kpi-rank bronze">3</span></td>
+                  <td>
+                    <div class="cell-user">
+                      <span class="avatar" style="background:#F59E0B;">ER</span>
+                      <div class="cell-user-info">
+                        <span class="cell-user-name">Emily Rodriguez</span>
+                        <span class="cell-user-sub">emily.r@email.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="tag warning">Python</span> <span class="tag">Django</span></td>
+                  <td class="cell-mono">20</td>
+                  <td class="cell-mono">14</td>
+                  <td class="cell-mono" style="font-weight:700;color:var(--color-success-700);">6</td>
+                  <td><span class="status-pill active">30.0%</span></td>
+                  <td><span class="status-pill info">Interviewing</span></td>
+                  <td><button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="accent-color:var(--color-primary-600);"></td>
+                  <td><span class="kpi-rank">4</span></td>
+                  <td>
+                    <div class="cell-user">
+                      <span class="avatar" style="background:#8B5CF6;">DK</span>
+                      <div class="cell-user-info">
+                        <span class="cell-user-name">David Kim</span>
+                        <span class="cell-user-sub">d.kim@email.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="tag primary">DevOps</span> <span class="tag">AWS</span></td>
+                  <td class="cell-mono">18</td>
+                  <td class="cell-mono">12</td>
+                  <td class="cell-mono" style="font-weight:700;color:var(--color-success-700);">5</td>
+                  <td><span class="status-pill active">27.8%</span></td>
+                  <td><span class="status-pill pending">On Hold</span></td>
+                  <td><button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="accent-color:var(--color-primary-600);"></td>
+                  <td><span class="kpi-rank">5</span></td>
+                  <td>
+                    <div class="cell-user">
+                      <span class="avatar" style="background:#06B6D4;">LP</span>
+                      <div class="cell-user-info">
+                        <span class="cell-user-name">Lisa Park</span>
+                        <span class="cell-user-sub">lisa.park@email.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="tag success">Data Eng</span> <span class="tag">Spark</span></td>
+                  <td class="cell-mono">16</td>
+                  <td class="cell-mono">11</td>
+                  <td class="cell-mono" style="font-weight:700;color:var(--color-success-700);">4</td>
+                  <td><span class="status-pill active">25.0%</span></td>
+                  <td><span class="status-pill info">Interviewing</span></td>
+                  <td><button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-pagination">
+            <span>Showing 1–5 of 247 candidates</span>
+            <div class="pagination-controls">
+              <button class="page-btn" disabled><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <button class="page-btn">…</button>
+              <button class="page-btn">50</button>
+              <button class="page-btn"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ACTIVITY + TIMELINE ===== -->
+      <section class="section">
+        <div class="grid grid-12">
+          <div class="col-6">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Recent Activity</div>
+                  <div class="chart-card-subtitle">Latest events across your pipeline</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body" style="padding-top:0;">
+                <div class="activity-item">
+                  <span class="avatar avatar-sm" style="background:#3B82F6;">SC</span>
+                  <div class="activity-content">
+                    <div class="activity-text"><strong>Sarah Chen</strong> was placed at <strong>Google</strong> via CyberCoders</div>
+                    <div class="activity-meta"><span>2m ago</span><span>·</span><span class="tag success">Placement</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <span class="avatar avatar-sm" style="background:#10B981;">MJ</span>
+                  <div class="activity-content">
+                    <div class="activity-text"><strong>Michael Johnson</strong> completed interview with <strong>Amazon</strong></div>
+                    <div class="activity-meta"><span>18m ago</span><span>·</span><span class="tag primary">Interview</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <span class="avatar avatar-sm" style="background:#F59E0B;">ER</span>
+                  <div class="activity-content">
+                    <div class="activity-text"><strong>Emily Rodriguez</strong> submitted to <strong>Senior Python Engineer</strong> at Meta</div>
+                    <div class="activity-meta"><span>1h ago</span><span>·</span><span class="tag warning">Submission</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <span class="avatar avatar-sm" style="background:#8B5CF6;">DK</span>
+                  <div class="activity-content">
+                    <div class="activity-text"><strong>David Kim</strong> matched with <strong>DevOps Engineer</strong> at Stripe</div>
+                    <div class="activity-meta"><span>2h ago</span><span>·</span><span class="tag primary">Match</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <span class="avatar avatar-sm" style="background:#06B6D4;">LP</span>
+                  <div class="activity-content">
+                    <div class="activity-text"><strong>Lisa Park</strong> interview scheduled with <strong>Netflix</strong></div>
+                    <div class="activity-meta"><span>3h ago</span><span>·</span><span class="tag primary">Interview</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title-group">
+                  <div class="chart-card-title">Candidate Timeline</div>
+                  <div class="chart-card-subtitle">Sarah Chen · journey to placement</div>
+                </div>
+                <div class="chart-card-actions">
+                  <button class="chart-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="timeline-dot success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="timeline-time">Feb 10, 2026 · 4:32 PM</div>
+                    <div class="timeline-title">Placed at Google</div>
+                    <div class="timeline-desc">Senior Frontend Engineer · $145/hr · Contract to hire</div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/></svg></div>
+                    <div class="timeline-time">Feb 8, 2026 · 11:15 AM</div>
+                    <div class="timeline-title">Offer accepted</div>
+                    <div class="timeline-desc">Negotiated rate from $135/hr to $145/hr</div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/></svg></div>
+                    <div class="timeline-time">Feb 5, 2026 · 2:00 PM</div>
+                    <div class="timeline-title">Final interview completed</div>
+                    <div class="timeline-desc">Panel interview with 4 engineers · Feedback: Strong hire</div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/></svg></div>
+                    <div class="timeline-time">Jan 28, 2026 · 9:45 AM</div>
+                    <div class="timeline-title">Technical screen passed</div>
+                    <div class="timeline-desc">React & system design assessment · Score: 92/100</div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="timeline-dot warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/></svg></div>
+                    <div class="timeline-time">Jan 22, 2026 · 3:20 PM</div>
+                    <div class="timeline-title">Submitted to Google</div>
+                    <div class="timeline-desc">Via CyberCoders · Vendor rate: $125/hr · Bill rate: $175/hr</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STATES SHOWCASE ===== -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-title-group">
+            <h2 class="section-title">Component States</h2>
+            <span class="section-subtitle">Every component supports loading, empty, error, and comparison states</span>
+          </div>
+        </div>
+        <div class="grid grid-3">
+          <!-- Loading -->
+          <div class="kpi kpi-skeleton">
+            <div class="kpi-header">
+              <div class="skel skel-line w-40" style="height:12px;"></div>
+              <div class="skel" style="width:24px;height:24px;border-radius:6px;"></div>
+            </div>
+            <div class="skel skel-value"></div>
+            <div class="skel skel-line w-60"></div>
+            <div class="skel" style="height:32px;margin-top:16px;"></div>
+          </div>
+
+          <!-- Empty -->
+          <div class="kpi">
+            <div class="kpi-empty">
+              <div class="kpi-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+              </div>
+              <div class="kpi-empty-title">No data available</div>
+              <div class="kpi-empty-desc">Try adjusting your filters or date range to see results.</div>
+              <button class="btn btn-secondary mt-3">Reset filters</button>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div class="kpi">
+            <div class="kpi-empty">
+              <div class="kpi-empty-icon" style="background:var(--color-danger-50);color:var(--color-danger-500);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="kpi-empty-title">Failed to load</div>
+              <div class="kpi-empty-desc">There was an error fetching this data. Please try again.</div>
+              <button class="btn btn-primary mt-3">Retry</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   SIDEBAR DATA
+   ============================================================ */
+const navData = [
+  { label: 'Analytics', items: [
+    { label: 'Overview', shortcut: '⌘1', active: true },
+    { label: 'Performance', shortcut: '⌘2' }
+  ]},
+  { label: 'Candidates', items: [
+    'Candidate Overview','Candidate Performance','Candidate Pipeline','Candidate Comparison','Candidate Activity','Candidate Status','Candidate Trends'
+  ]},
+  { label: 'Submissions', items: [
+    'Submission Overview','Submission Trends','Submission Funnel','Submission Status','Submission Success Rate','Submission by Job','Submission by Vendor','Submission by Candidate'
+  ]},
+  { label: 'Interviews', items: [
+    'Interview Overview','Interview Trends','Interview Conversion','Interview Status','Interview by Vendor','Interview by Candidate'
+  ]},
+  { label: 'Matches', items: [
+    'Match Overview','Match Rate','Match Trends','Match by Job','Match by Vendor','Match by Candidate'
+  ]},
+  { label: 'Placements', items: [
+    'Placement Overview','Placement Trends','Placement Funnel','Placement Rate','Placement Performance'
+  ]},
+  { label: 'Jobs', items: [
+    'Job Overview','Job Performance','Job Trends','Jobs by Technology','Jobs by Location','Jobs by Experience','Job Status'
+  ]},
+  { label: 'Vendors', items: [
+    'Vendor Overview','Vendor Performance','Vendor Comparison','Vendor Trends','Vendor Conversion','Vendor Activity'
+  ]},
+  { label: 'Technologies', items: [
+    'Technology Demand','Technology Trends','Technology Performance','Technology Distribution'
+  ]},
+  { label: 'Pipeline', items: [
+    'Overall Funnel','Candidate Pipeline','Submission Pipeline','Interview Pipeline','Placement Pipeline'
+  ]},
+  { label: 'Productivity', items: [
+    'Team Productivity','User Activity','Daily Activity','Weekly Activity','Monthly Activity'
+  ]},
+  { label: 'Revenue', items: [
+    'Revenue Overview','Revenue Trends','Revenue by Vendor','Revenue by Client','Revenue Forecast'
+  ]},
+  { label: 'Forecasting', items: [
+    'Submission Forecast','Interview Forecast','Placement Forecast','Revenue Forecast'
+  ]},
+  { label: 'Reports', items: [
+    'Saved Reports','Scheduled Reports','Export Center','Custom Reports'
+  ]}
+];
+
+const chevron = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+function renderSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  let html = '';
+  navData.forEach((section, idx) => {
+    const isCollapsed = false;
+    html += `<div class="nav-section${isCollapsed ? ' collapsed' : ''}" data-section="${idx}">`;
+    html += `<div class="nav-section-header" onclick="toggleSection(${idx})">
+      ${chevron}
+      <span class="nav-section-title">${section.label}</span>
+      <span class="nav-section-count">${section.items.length}</span>
+    </div>`;
+    html += `<div class="nav-section-items" style="max-height:${section.items.length * 34}px;">`;
+    section.items.forEach(item => {
+      if (typeof item === 'string') {
+        html += `<div class="nav-item"><span class="nav-item-label">${item}</span></div>`;
+      } else {
+        html += `<div class="nav-item${item.active ? ' active' : ''}">
+          ${item.active ? '<span class="nav-item-dot"></span>' : ''}
+          <span class="nav-item-label">${item.label}</span>
+          ${item.shortcut ? `<span class="nav-item-shortcut">${item.shortcut}</span>` : ''}
+        </div>`;
+      }
+    });
+    html += `</div></div>`;
+  });
+  nav.innerHTML = html;
+}
+
+function toggleSection(idx) {
+  const section = document.querySelector(`.nav-section[data-section="${idx}"]`);
+  section.classList.toggle('collapsed');
+}
+
+renderSidebar();
+
+/* ============================================================
+   HEATMAP
+   ============================================================ */
+function renderHeatmap() {
+  const heatmap = document.getElementById('heatmap');
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const hours = ['6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p'];
+  let html = '';
+  // Header row
+  html += `<div></div>`;
+  hours.forEach(h => {
+    html += `<div style="font-size:10px;color:var(--color-gray-400);text-align:center;font-weight:600;">${h}</div>`;
+  });
+  // Data rows
+  days.forEach((d, di) => {
+    html += `<div style="font-size:10px;color:var(--color-gray-500);font-weight:600;display:flex;align-items:center;">${d}</div>`;
+    hours.forEach((h, hi) => {
+      const intensity = Math.random();
+      let color = '#EFF6FF';
+      if (intensity > 0.8) color = '#1D4ED8';
+      else if (intensity > 0.6) color = '#3B82F6';
+      else if (intensity > 0.4) color = '#93C5FD';
+      else if (intensity > 0.2) color = '#DBEAFE';
+      html += `<div class="heatmap-cell" style="background:${color};" title="${d} ${h}: ${Math.floor(intensity*50)} submissions"></div>`;
+    });
+  });
+  heatmap.innerHTML = html;
+}
+renderHeatmap();
+
+/* ============================================================
+   INTERACTIONS
+   ============================================================ */
+// Tab switching (demo)
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// KPI hover effects handled via CSS
+// Filter chip toggle (demo)
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    if (!chip.querySelector('svg[viewBox="0 0 24 24"]')) return;
+    chip.classList.toggle('active');
+  });
+});
+
+// Legend toggle (demo)
+document.querySelectorAll('.legend-item').forEach(item => {
+  item.addEventListener('click', () => {
+    item.style.opacity = item.style.opacity === '0.3' ? '1' : '0.3';
+  });
+});
+
+console.log('%cBenchFlow Analytics', 'font-size:20px;font-weight:700;color:#3B82F6;');
+console.log('%cEnterprise Design System loaded successfully.', 'font-size:12px;color:#6B7280;');
+</script>
+
+</body>
+</html>
